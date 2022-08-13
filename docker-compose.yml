@@ -10,6 +10,9 @@ services:
       - 80:80
       - 443:443
     volumes:
+      - /volumes/nginx/certs:/etc/nginx/certs:ro
+      - /volumes/nginx/vhostd:/etc/nginx/vhost.d
+      - /volumes/nginx/config/settings.conf:/etc/nginx/conf.d/custom_settings.conf:ro
       - /var/run/docker.sock:/tmp/docker.sock:ro
 
   portal:
@@ -17,15 +20,25 @@ services:
     container_name: Portal
     restart: always
     environment:
-      - VIRTUAL_HOST=portal.midomino.com
+      - VIRTUAL_HOST=opsystem-erp.ddns.net
     volumes:
-      - /storage/nginx/portal:/usr/share/nginx/html:ro
+      - /volumes/www/portal:/usr/share/nginx/html:ro
+
+
+  factura:
+    image: nginx
+    container_name: factura
+    restart: always
+    environment:
+      - VIRTUAL_HOST=opsystem-factura.ddns.net
+    volumes:
+      - /volumes/www/factura:/usr/share/nginx/html:ro
 
   erp:
     image: httpd
     container_name: ERP
     restart: always
     environment:
-      - VIRTUAL_HOST=erp.midomino.com
+      - VIRTUAL_HOST=opsystem-portal.ddns.net
     volumes:
-      - /storage/apache/erp:/usr/local/apache2/htdocs
+      - /volumes/www/erp:/usr/local/apache2/htdocs
